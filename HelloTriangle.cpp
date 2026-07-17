@@ -167,6 +167,7 @@ int main()
 
     // 1. Then set the vertex attributes pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Define vertex attribute layout (location=0, 3 floats per vertex)
+    // (location of vertex attrib (location = 0 in vertex shader), size of attrib. (vec3 so 3 values), data type, normalize data or not, stride (space btw. consecutive vertex attribs., 12 bytes in this case), offset (where position data begins)
     glEnableVertexAttribArray(0); // Enable vertex attribute at location 0
     
     //* RENDERING TRIANGLE
