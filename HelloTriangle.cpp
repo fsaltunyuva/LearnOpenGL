@@ -187,7 +187,7 @@ int main()
 
         // RECTANGLE (with 2 triangles)
         // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // (what are we drawing, num of indices, type of indices, EBO offset)
 
         glfwSwapBuffers(window); // Swap the front and back buffers (Look for double buffering on google)
         glfwPollEvents(); // Poll for and process events
