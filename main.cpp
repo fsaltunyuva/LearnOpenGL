@@ -47,17 +47,24 @@ int main()
     // Vertex shader source code (GLSL)
     const char* vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n" // Input vertex position (location = 0)
+        "layout (location = 1) in vec3 aColor;\n" // the color variable has attribute position 1
+
+        "out vec3 ourColor;\n" // output a color to the fragment shader
+
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "   gl_Position = vec4(aPos, 1.0);\n"
+        "   ourColor = aColor;\n" // set ourColor to the input color we got from the vertex data
         "}\0";
 
     // Fragment shader source code (GLSL)
     const char* fragmentShaderSource = "#version 330 core\n"
         "out vec4 FragColor;\n" // Output color variable
+        // "uniform vec4 ourColor;\n"
+        "in vec3 ourColor;\n"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n" // Set fixed orange color
+        "   FragColor = vec4(ourColor, 1.0);\n" // Set fixed orange color
         "}\n\0";
 
     // VERTEX SHADER 
@@ -121,32 +128,13 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    /*
-    float vertices[] = { // FOR RECTANGLE
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
-    };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
-    */
+    float vertices[] = {
+        // positions         // colors
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+   };
 
-    float vertices[] = { // FOR TRIANGLE
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-	}; // Vertex data for a triangle (Normalized device coordinates, NDC)
-    
-    /*
-    // FOR RECTANGLE (Indexed Drawing to avoid overhead when drawing rectangle with 2 triangles (2 vertices are repated))
-    unsigned int EBO; // Element Buffor Objects, EBO (a buffer that stores indices that OpenGL uses to decide what vertices to draw)
-    glGenBuffers(1, &EBO); // Generate an Element Buffer Object (EBO) ID
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // Bind EBO as the current element array buffer
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Copy index data to GPU memory
-    */
     // 0. Copy our vertices array in a buffer for OpenGL to use
     unsigned int VAO; // Vertex Array Object, VAO 
     glGenVertexArrays(1, &VAO); // Generate a VAO ID
@@ -165,10 +153,14 @@ int main()
 	    //      GL_STATIC_DRAW: the data is set only once and used by the GPU many times.
 	    //      GL_DYNAMIC_DRAW: the data is changed a lot and used by the GPU many times.
 
-    // 1. Then set the vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Define vertex attribute layout (location=0, 3 floats per vertex)
-    // (location of vertex attrib (location = 0 in vertex shader), size of attrib. (vec3 so 3 values), data type, normalize data or not, stride (space btw. consecutive vertex attribs., 12 bytes in this case), offset (where position data begins)
+    // 1. Then set the vertex POSITION attributes pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Define vertex attribute layout (location=0, 3 floats per vertex)
+    // (location of vertex attrib (location = 0 in vertex shader), size of attrib. (vec3 so 3 values), data type, normalize data or not, stride (space btw. consecutive vertex attribs., 24 bytes in this case), offset (where position data begins)
     glEnableVertexAttribArray(0); // Enable vertex attribute at location 0
+
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
     
     //* RENDERING TRIANGLE
     
@@ -180,15 +172,17 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Set the clear color (background color)
         glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer
 
+        // float timeValue = glfwGetTime();
+        // float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+        // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor"); // can be before setting the shader program
+
         // TRIANGLE
         // 2. Use our shader program when we want to render an object
         glUseProgram(shaderProgram); // Activate the shader program for rendering
+        // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // setting the uniform value (should be after shader program selection bc it sets the current shader program's)
+
         glBindVertexArray(VAO); // Bind the VAO containing vertex data and attribute config
         glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices as one triangle
-
-        // RECTANGLE (with 2 triangles)
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // (what are we drawing, num of indices, type of indices, EBO offset)
 
         glfwSwapBuffers(window); // Swap the front and back buffers (Look for double buffering on google)
         glfwPollEvents(); // Poll for and process events
