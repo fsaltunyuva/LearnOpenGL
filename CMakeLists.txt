@@ -12,7 +12,7 @@ add_subdirectory(ext/glfw)
 set(GLAD_SRC ext/glad/glad.c)
 
 add_executable(LearnOpenGL
-        HelloTriangle.cpp
+        main.cpp
         ${GLAD_SRC}
 )
 
