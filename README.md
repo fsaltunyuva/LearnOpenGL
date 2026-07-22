@@ -1,5 +1,7 @@
-# LearnOpenGL
+# Learn OpenGL
 
-This repository includes my source files, which I wrote when following the chapters in [learnopengl.com](https://learnopengl.com/).
+This repository includes my source files, which I wrote when following the chapters in [learnopengl.com](https://learnopengl.com/). Huge thanks to [Joey De Vries](https://joeydevries.com/#home) for amazing chapters and tutorials.
 
-All setup processes and imports of libraries can be found in the [Creating a Window Chapter](https://learnopengl.com/Getting-started/Creating-a-window).
+All setup processes and library imports can be found in the [Creating a Window Chapter](https://learnopengl.com/Getting-started/Creating-a-window).
+
+I used [```main.cpp```](https://github.com/fsaltunyuva/LearnOpenGL/blob/main/main.cpp) as my playground. All the code I have written while following the chapters is located in the [```chapters folder```](https://github.com/fsaltunyuva/LearnOpenGL/tree/main/chapters), and all the exercises recommended at the end of the chapters are located in the [```exercises folder```](https://github.com/fsaltunyuva/LearnOpenGL/tree/main/exercises).
