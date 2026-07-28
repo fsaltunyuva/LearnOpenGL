@@ -6,5 +6,5 @@ in vec3 ourColor;
 
 void main()
 {
-   FragColor = vec4(ourColor, 1.0); // Set fixed orange color
+   FragColor = vec4(ourColor, 1.0);
 }

@@ -27,5 +27,3 @@ target_link_libraries(LearnOpenGL PRIVATE glfw)
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(LearnOpenGL PRIVATE OpenGL::GL)
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR}) # copies shaders folder to cmake build folder
