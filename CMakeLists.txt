@@ -10,7 +10,8 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(ext/glfw)
 
 set(GLAD_SRC ext/glad/glad.c
-        shader.h)
+        shader.h
+        stb_image.h)
 
 add_executable(LearnOpenGL
         main.cpp

@@ -4,6 +4,9 @@
 
 #include "shader.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 int main()
 {
     glfwInit(); // Initialize GLFW
@@ -43,6 +46,28 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     void processInput(GLFWwindow* window); // Function prototype for processing input
+
+
+    // TEXTURE LOAD
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
+
+    unsigned int texture;
+    glGenTextures(1, &texture); // how many textures we want to generate, array of uint (single uint in this case)
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // texture wrapping option
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // texture wrapping option
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // linearly interpolate btw. closest mipmaps and sample via linear interpolation
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // use linear interpolation when magnifying (mipmap is based on downscaling, not magnifying)
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    // texture target, mipmap level for current texture, format to store, width, height, legacy stuff dont care, format of source image, data type of source image, image data
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data); // :)
 
 	// RENDERING TRIANGLE
 
