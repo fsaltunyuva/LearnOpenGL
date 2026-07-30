@@ -71,13 +71,19 @@ int main()
 
 	// RENDERING TRIANGLE
 
-    Shader ourShader("shaders/3.3.shader.vs", "shaders/3.3.shader.fs");
+    Shader ourShader("shaders/3.4.shader.vs", "shaders/3.4.shader.fs");
+
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    };
 
     float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-       -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
    };
 
     // 0. Copy our vertices array in a buffer for OpenGL to use
@@ -98,16 +104,25 @@ int main()
 	    //      GL_STATIC_DRAW: the data is set only once and used by the GPU many times.
 	    //      GL_DYNAMIC_DRAW: the data is changed a lot and used by the GPU many times.
 
+    // EBO should be after VAO!
+    unsigned int EBO; // Element Buffer Objects, EBO (a buffer that stores indices that OpenGL uses to decide what vertices to draw)
+    glGenBuffers(1, &EBO); // Generate an Element Buffer Object (EBO) ID
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // Bind EBO as the current element array buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Copy index data to GPU memory
+
+
     // 1. Then set the vertex POSITION attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Define vertex attribute layout (location=0, 3 floats per vertex)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Define vertex attribute layout (location=0, 3 floats per vertex)
     // (location of vertex attrib (location = 0 in vertex shader), size of attrib. (vec3 so 3 values), data type, normalize data or not, stride (space btw. consecutive vertex attribs., 24 bytes in this case), offset (where position data begins)
     glEnableVertexAttribArray(0); // Enable vertex attribute at location 0
 
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
-    
-    //* RENDERING TRIANGLE
+
+    // texture coordinates
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
     
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -126,10 +141,9 @@ int main()
         ourShader.use(); // Activate the shader program for rendering
         // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // setting the uniform value (should be after shader program selection bc it sets the current shader program's)
 
-        ourShader.setFloat("horizontalOffset", 0); // exercise 2
-
-        glBindVertexArray(VAO); // Bind the VAO containing vertex data and attribute config
-        glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices as one triangle
+        // RECTANGLE (with 2 triangles)
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // (what are we drawing, num of indices, type of indices, EBO offset)
 
         glfwSwapBuffers(window); // Swap the front and back buffers (Look for double buffering on google)
         glfwPollEvents(); // Poll for and process events
