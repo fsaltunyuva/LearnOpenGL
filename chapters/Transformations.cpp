@@ -24,8 +24,8 @@ int main()
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL); 
-    
+    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+
     // Check if window creation was successful
     if (window == NULL)
     {
@@ -110,15 +110,15 @@ int main()
    };
 
     // 0. Copy our vertices array in a buffer for OpenGL to use
-    unsigned int VAO; // Vertex Array Object, VAO 
+    unsigned int VAO; // Vertex Array Object, VAO
     glGenVertexArrays(1, &VAO); // Generate a VAO ID
     glBindVertexArray(VAO); // Bind the VAO to record vertex attribute configuration
 
 	unsigned int VBO; // Vertex Buffer Object, VBO (stores vertex data in GPU memory for efficiency)
-	glGenBuffers(1, &VBO); // Generate a buffer ID 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind the buffer to the GL_ARRAY_BUFFER 
+	glGenBuffers(1, &VBO); // Generate a buffer ID
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind the buffer to the GL_ARRAY_BUFFER
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Copy vertex data to the buffer
-        // Arguments: 
+        // Arguments:
 	    // 1. The target buffer type (GL_ARRAY_BUFFER)
 	    // 2. The size of the vertex data in bytes (sizeof(vertices))
 	    // 3. The actual vertex data (vertices)
@@ -151,7 +151,7 @@ int main()
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1); // or with shader class
 
-    // Transformation
+    // // Transformation
     // glm::mat4 trans = glm::mat4(1.0f); // creating identity matrix (otherwise it becomes null)
     // trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0)); // matrix to load data, angle in radians, rotation axis (must be unit vector!)
     // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
