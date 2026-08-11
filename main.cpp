@@ -153,6 +153,19 @@ int main()
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     // 0. Copy our vertices array in a buffer for OpenGL to use
     unsigned int VAO; // Vertex Array Object, VAO 
     glGenVertexArrays(1, &VAO); // Generate a VAO ID
@@ -201,13 +214,15 @@ int main()
     // unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
     // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans)); // location, how many matrices, transpose, data (glm stores a bit different so we need value_ptr)
 
+    glEnable(GL_DEPTH_TEST); // Enable automatic depth testing to discard fragments behind
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
         processInput(window); // Process input
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Set the clear color (background color)
-        glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer
+        glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT); // Clear the color buffer and depth buffer
 
         // Texture unit GL_TEXTURE0 is always by default activated
         glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
@@ -216,8 +231,8 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         // Coordinate Systems
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        // glm::mat4 model = glm::mat4(1.0f);
+        // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
         glm::mat4 view = glm::mat4(1.0f);
         // note that we're translating the scene in the reverse direction of where we want to move
@@ -226,14 +241,24 @@ int main()
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        ourShader.setMat4("model", model);
+        // ourShader.setMat4("model", model);
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
         // RECTANGLE (with 2 triangles)
         glBindVertexArray(VAO);
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // (what are we drawing, num of indices, type of indices, EBO offset)
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(VAO);
+        for(unsigned int i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            ourShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glfwSwapBuffers(window); // Swap the front and back buffers (Look for double buffering on google)
         glfwPollEvents(); // Poll for and process events
