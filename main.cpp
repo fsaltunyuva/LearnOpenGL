@@ -11,6 +11,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// camera
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
 int main()
 {
     glfwInit(); // Initialize GLFW
@@ -219,6 +227,10 @@ int main()
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         processInput(window); // Process input
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Set the clear color (background color)
@@ -234,9 +246,31 @@ int main()
         // glm::mat4 model = glm::mat4(1.0f);
         // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-        glm::mat4 view = glm::mat4(1.0f);
-        // note that we're translating the scene in the reverse direction of where we want to move
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        // glm::mat4 view = glm::mat4(1.0f);
+        // // note that we're translating the scene in the reverse direction of where we want to move
+        // view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        //
+        // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); // camera is pointing the origin
+        // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); // named direction but it points the reverse direction of what is targeting
+        //
+        // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+        // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); // up cross cameraDir gives +x axis direction (switched order of cross product would give -x)
+        //
+        // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight); // camera dir cross +x axis of camera gives up axis of camera
+
+        // swinging camera
+        // const float radius = 10.0f;
+        // float camX = sin(glfwGetTime()) * radius;
+        // float camZ = cos(glfwGetTime()) * radius;
+        // glm::mat4 view;
+        // view = glm::lookAt(glm::vec3(camX, 0.0, camZ), // lookAt automatically creates the matrix (camera pos, camera target pos, up vector)
+        //                  glm::vec3(0.0, 0.0, 0.0),
+        //                     glm::vec3(0.0, 1.0, 0.0));
+
+        glm::mat4 view;
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -280,4 +314,18 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    const float cameraSpeed = 2.5f * deltaTime;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
