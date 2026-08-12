@@ -11,7 +11,8 @@ add_subdirectory(ext/glfw)
 
 set(GLAD_SRC ext/glad/glad.c
         shader.h
-        stb_image.h)
+        stb_image.h
+        camera.h)
 
 add_executable(LearnOpenGL
         main.cpp

@@ -44,7 +44,7 @@ int main()
 
     // Create a windowed mode window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    
+
     // Check if window creation was successful
     if (window == NULL)
     {
@@ -185,15 +185,15 @@ int main()
     };
 
     // 0. Copy our vertices array in a buffer for OpenGL to use
-    unsigned int VAO; // Vertex Array Object, VAO 
+    unsigned int VAO; // Vertex Array Object, VAO
     glGenVertexArrays(1, &VAO); // Generate a VAO ID
     glBindVertexArray(VAO); // Bind the VAO to record vertex attribute configuration
 
 	unsigned int VBO; // Vertex Buffer Object, VBO (stores vertex data in GPU memory for efficiency)
-	glGenBuffers(1, &VBO); // Generate a buffer ID 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind the buffer to the GL_ARRAY_BUFFER 
+	glGenBuffers(1, &VBO); // Generate a buffer ID
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Bind the buffer to the GL_ARRAY_BUFFER
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Copy vertex data to the buffer
-        // Arguments: 
+        // Arguments:
 	    // 1. The target buffer type (GL_ARRAY_BUFFER)
 	    // 2. The size of the vertex data in bytes (sizeof(vertices))
 	    // 3. The actual vertex data (vertices)
