@@ -13,5 +13,5 @@ void main()
 {
    gl_Position = projection * view * model * vec4(aPos, 1.0);
    FragPos = vec3(model * vec4(aPos, 1.0)); // we need world space so multiplying with model matrix is enough
-   Normal = aNormal;
+   Normal = mat3(transpose(inverse(model))) * aNormal; // non uniform scaling effects the normal vector, we need this
 }
