@@ -49,7 +49,7 @@ int main()
 
     // Create a windowed mode window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    
+
     // Check if window creation was successful
     if (window == NULL)
     {
@@ -92,7 +92,7 @@ int main()
 #pragma endregion
 
     Shader lightingShader("shaders/lighting_maps.vs", "shaders/lighting_maps.fs");
-    Shader lightCubeShader("shaders/colors_lightsource.vs", "shaders/colors_lightsource.fs"); // light source
+    Shader lightCubeShader("shaders/lighting_maps_lightsource.vs", "shaders/lighting_maps_lightsource.fs"); // light source
 
 #pragma region VAO_VBO
     float vertices[] = {
