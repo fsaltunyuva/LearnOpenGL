@@ -9,6 +9,13 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(ext/glfw)
 
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(ext/assimp)
+
 set(GLAD_SRC ext/glad/glad.c
         shader.h
         stb_image.h
@@ -23,9 +30,11 @@ target_include_directories(LearnOpenGL PRIVATE
         ext/glad/include
         ext/glm
         ext/stb_image
+        ext/assimp/include
+        ${CMAKE_CURRENT_BINARY_DIR}/ext/assimp/include
 )
 
-target_link_libraries(LearnOpenGL PRIVATE glfw)
+target_link_libraries(LearnOpenGL PRIVATE glfw assimp)
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(LearnOpenGL PRIVATE OpenGL::GL)
+target_link_libraries(LearnOpenGL PRIVATE OpenGL::GL)
