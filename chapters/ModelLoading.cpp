@@ -48,7 +48,7 @@ int main()
 
     // Create a windowed mode window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    
+
     // Check if window creation was successful
     if (window == NULL)
     {
